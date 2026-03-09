@@ -101,6 +101,8 @@ export default function Tasks() {
   const [editReason, setEditReason] = useState("");
   const [editResponsible, setEditResponsible] = useState<string>("");
   const [editPriority, setEditPriority] = useState<"low" | "medium" | "high">("medium");
+  const [editDesc, setEditDesc] = useState("");
+  const [editWeek, setEditWeek] = useState("1");
 
   // Create form state
   const [newDesc, setNewDesc] = useState("");
@@ -139,6 +141,8 @@ export default function Tasks() {
 
   const openEdit = (task: Task) => {
     setEditingTask(task);
+    setEditDesc(task.description);
+    setEditWeek(task.week.toString());
     setEditStatus(task.status);
     setEditReason(task.pendingReason ?? "");
     setEditResponsible(task.responsibleId?.toString() ?? "");
@@ -147,9 +151,19 @@ export default function Tasks() {
 
   const handleSaveEdit = async () => {
     if (!editingTask) return;
+    if (!editDesc.trim()) {
+      toast.error("A descrição da tarefa é obrigatória");
+      return;
+    }
+    const parsedWeek = Number.parseInt(editWeek, 10);
+    if (!Number.isFinite(parsedWeek)) {
+      toast.error("Semana inválida");
+      return;
+    }
     const hasResponsible = editResponsible !== "" && editResponsible !== NO_RESPONSIBLE_VALUE;
     await updateStatus.mutateAsync({
       id: editingTask.id,
+      description: editDesc.trim(),
       status: editStatus,
       pendingReason: editStatus === "pending" ? editReason : undefined,
       responsibleId:
@@ -157,7 +171,7 @@ export default function Tasks() {
           ? parseInt(editResponsible, 10)
           : undefined,
       priority: editPriority,
-      week: editingTask.week,
+      week: parsedWeek,
     });
     setEditingTask(null);
   };
@@ -474,9 +488,29 @@ export default function Tasks() {
           </DialogHeader>
           {editingTask && (
             <div className="space-y-4 py-2">
-              <div className="p-3 rounded-lg bg-secondary/50 border border-border/50">
-                <p className="text-sm font-medium text-foreground">{editingTask.description}</p>
-                <p className="text-xs text-muted-foreground mt-1">Semana {editingTask.week}</p>
+              <div className="space-y-2">
+                <Label className="text-sm text-foreground">Descrição *</Label>
+                <Textarea
+                  value={editDesc}
+                  onChange={(e) => setEditDesc(e.target.value)}
+                  placeholder="Descreva a tarefa..."
+                  className="bg-secondary border-border resize-none text-sm"
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm text-foreground">Semana *</Label>
+                <Select value={editWeek} onValueChange={setEditWeek}>
+                  <SelectTrigger className="bg-secondary border-border">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5, 6].map((w) => (
+                      <SelectItem key={w} value={w.toString()}>Semana {w}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
