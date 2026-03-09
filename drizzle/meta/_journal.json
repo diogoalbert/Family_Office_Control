@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1772739599311,
+      "tag": "0000_supreme_black_crow",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1772739912975,
+      "tag": "0001_cynical_demogoblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1772825200000,
+      "tag": "0002_lush_review_columns",
+      "breakpoints": true
+    }
+  ]
+}
