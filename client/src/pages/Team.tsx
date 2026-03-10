@@ -20,13 +20,13 @@ const PRESET_COLORS = [
 ];
 
 const INITIAL_TEAM = [
-  { name: "Márcio Matos", role: "Partner / Líder do Projeto", area: "Steering", color: "#c084fc" },
+  { name: "Márcio Matos", role: "Partner / Project Lead", area: "Steering", color: "#c084fc" },
   { name: "Diogo Reis", role: "Portugal Tax", area: "Tax, Reporting, Classification", color: "#60a5fa" },
   { name: "Gonçalo", role: "Architecture / Legal", area: "Legal Reasoning, Governance", color: "#34d399" },
   { name: "Michalis Zachariou", role: "Cyprus Governance", area: "Substance, Process Control", color: "#f59e0b" },
-  { name: "Melissa Furlan", role: "Coordenação", area: "Supervisão", color: "#f87171" },
-  { name: "Rafaela Oliveira", role: "Coordenação", area: "Supervisão", color: "#a78bfa" },
-  { name: "Victor Tassini", role: "Project Management", area: "PMO, Ferramentas de Tracking", color: "#38bdf8" },
+  { name: "Melissa Furlan", role: "Coordination", area: "Supervision", color: "#f87171" },
+  { name: "Rafaela Oliveira", role: "Coordination", area: "Supervision", color: "#a78bfa" },
+  { name: "Victor Tassini", role: "Project Management", area: "PMO, Tracking Tools", color: "#38bdf8" },
 ];
 
 export default function Team() {
@@ -35,16 +35,16 @@ export default function Team() {
   const { data: tasks = [] } = trpc.tasks.list.useQuery();
 
   const createMember = trpc.teamMembers.create.useMutation({
-    onSuccess: () => { utils.teamMembers.list.invalidate(); toast.success("Membro adicionado!"); setShowCreate(false); },
-    onError: () => toast.error("Erro ao adicionar membro"),
+    onSuccess: () => { utils.teamMembers.list.invalidate(); toast.success("Member added!"); setShowCreate(false); },
+    onError: () => toast.error("Error adding member"),
   });
   const updateMember = trpc.teamMembers.update.useMutation({
-    onSuccess: () => { utils.teamMembers.list.invalidate(); toast.success("Membro atualizado!"); setEditingMember(null); },
-    onError: () => toast.error("Erro ao atualizar membro"),
+    onSuccess: () => { utils.teamMembers.list.invalidate(); toast.success("Member updated!"); setEditingMember(null); },
+    onError: () => toast.error("Error updating member"),
   });
   const deleteMember = trpc.teamMembers.delete.useMutation({
-    onSuccess: () => { utils.teamMembers.list.invalidate(); toast.success("Membro removido!"); },
-    onError: () => toast.error("Erro ao remover membro"),
+    onSuccess: () => { utils.teamMembers.list.invalidate(); toast.success("Member removed!"); },
+    onError: () => toast.error("Error removing member"),
   });
 
   const [showCreate, setShowCreate] = useState(false);
@@ -67,7 +67,7 @@ export default function Team() {
   };
 
   const handleCreate = async () => {
-    if (!formName.trim() || !formRole.trim()) { toast.error("Nome e cargo são obrigatórios"); return; }
+    if (!formName.trim() || !formRole.trim()) { toast.error("Name and role are required"); return; }
     await createMember.mutateAsync({ name: formName, role: formRole, area: formArea || undefined, color: formColor });
   };
 
@@ -80,7 +80,7 @@ export default function Team() {
     for (const m of INITIAL_TEAM) {
       await createMember.mutateAsync(m);
     }
-    toast.success("Equipe inicial carregada!");
+    toast.success("Initial team loaded!");
   };
 
   const getMemberStats = (memberId: number) => {
@@ -104,19 +104,19 @@ export default function Team() {
   const FormFields = () => (
     <div className="space-y-4 py-2">
       <div className="space-y-2">
-        <Label className="text-sm text-foreground">Nome *</Label>
-        <Input value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Nome completo" className="bg-secondary border-border" />
+        <Label className="text-sm text-foreground">Name *</Label>
+        <Input value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Full name" className="bg-secondary border-border" />
       </div>
       <div className="space-y-2">
-        <Label className="text-sm text-foreground">Cargo *</Label>
+        <Label className="text-sm text-foreground">Role *</Label>
         <Input value={formRole} onChange={(e) => setFormRole(e.target.value)} placeholder="Ex: Portugal Tax" className="bg-secondary border-border" />
       </div>
       <div className="space-y-2">
-        <Label className="text-sm text-foreground">Área</Label>
+        <Label className="text-sm text-foreground">Area</Label>
         <Input value={formArea} onChange={(e) => setFormArea(e.target.value)} placeholder="Ex: Tax, Reporting" className="bg-secondary border-border" />
       </div>
       <div className="space-y-2">
-        <Label className="text-sm text-foreground">Cor</Label>
+        <Label className="text-sm text-foreground">Color</Label>
         <div className="flex gap-2 flex-wrap">
           {PRESET_COLORS.map((c) => (
             <button
@@ -139,9 +139,9 @@ export default function Team() {
         <div>
           <h1 className="text-3xl font-serif font-bold text-foreground flex items-center gap-3">
             <Users className="w-8 h-8 text-primary" />
-            Equipe do Projeto
+            Project Team
           </h1>
-          <p className="text-muted-foreground mt-1">Gerencie os membros da equipe MMLaw</p>
+          <p className="text-muted-foreground mt-1">Manage MMLaw team members</p>
         </div>
         <div className="flex gap-2">
           {members.length === 0 && (
@@ -153,12 +153,12 @@ export default function Team() {
               className="gap-2 border-primary/40 text-primary hover:bg-primary/10"
             >
               <Sparkles className="w-4 h-4" />
-              Carregar Equipe Inicial
+              Load Initial Team
             </Button>
           )}
           <Button onClick={openCreate} className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
             <Plus className="w-4 h-4" />
-            Novo Membro
+            New Member
           </Button>
         </div>
       </div>
@@ -166,12 +166,12 @@ export default function Team() {
       {/* Team Grid */}
       {members.length === 0 ? (
         <Card className="bg-card border-border">
-          <CardContent className="py-16 text-center space-y-4">
+          <CardContent className="py-10 text-center space-y-3">
             <Users className="w-12 h-12 text-muted-foreground/40 mx-auto" />
             <div>
-              <p className="text-foreground font-medium">Nenhum membro cadastrado</p>
+              <p className="text-foreground font-medium">No members registered</p>
               <p className="text-sm text-muted-foreground mt-1">
-                Clique em "Carregar Equipe Inicial" para adicionar os membros do projeto MMLaw automaticamente.
+                Click "Load Initial Team" to automatically add MMLaw project members.
               </p>
             </div>
             <Button
@@ -180,7 +180,7 @@ export default function Team() {
               className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <Sparkles className="w-4 h-4" />
-              Carregar Equipe Inicial
+              Load Initial Team
             </Button>
           </CardContent>
         </Card>
@@ -193,8 +193,8 @@ export default function Team() {
 
             return (
               <Card key={member.id} className="bg-card border-border hover:border-primary/30 transition-all group">
-                <CardContent className="p-5">
-                  <div className="flex items-start justify-between mb-4">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div
                         className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
@@ -223,7 +223,7 @@ export default function Team() {
                   {/* Task Stats */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Progresso</span>
+                      <span className="text-muted-foreground">Progress</span>
                       <span className="font-semibold text-primary">{progress}%</span>
                     </div>
                     <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
@@ -262,13 +262,13 @@ export default function Team() {
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
         <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-serif text-foreground">Novo Membro</DialogTitle>
+            <DialogTitle className="font-serif text-foreground">New Member</DialogTitle>
           </DialogHeader>
           <FormFields />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCreate(false)} className="border-border">Cancelar</Button>
+            <Button variant="outline" onClick={() => setShowCreate(false)} className="border-border">Cancel</Button>
             <Button onClick={handleCreate} disabled={createMember.isPending} className="bg-primary text-primary-foreground hover:bg-primary/90">
-              {createMember.isPending ? "Adicionando..." : "Adicionar"}
+              {createMember.isPending ? "Adicionando..." : "Add"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -278,13 +278,13 @@ export default function Team() {
       <Dialog open={!!editingMember} onOpenChange={(o) => !o && setEditingMember(null)}>
         <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-serif text-foreground">Editar Membro</DialogTitle>
+            <DialogTitle className="font-serif text-foreground">Edit Member</DialogTitle>
           </DialogHeader>
           <FormFields />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditingMember(null)} className="border-border">Cancelar</Button>
+            <Button variant="outline" onClick={() => setEditingMember(null)} className="border-border">Cancel</Button>
             <Button onClick={handleUpdate} disabled={updateMember.isPending} className="bg-primary text-primary-foreground hover:bg-primary/90">
-              {updateMember.isPending ? "Salvando..." : "Salvar"}
+              {updateMember.isPending ? "Saving..." : "Save"}
             </Button>
           </DialogFooter>
         </DialogContent>

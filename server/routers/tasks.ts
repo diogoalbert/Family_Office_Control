@@ -90,8 +90,8 @@ export const tasksRouter = router({
         const weekStatus = await getWeekCompletionStatus(data.week);
         if (weekStatus.allDone) {
           await notifyOwner({
-            title: `✅ Sprint Semana ${data.week} Concluída!`,
-            content: `Todas as ${weekStatus.total} tarefas da Semana ${data.week} foram concluídas com sucesso.`,
+            title: `✅ Sprint Week ${data.week} Completed!`,
+            content: `All ${weekStatus.total} tasks da Week ${data.week} were completed successfully.`,
           });
         }
       }
@@ -121,8 +121,8 @@ export const tasksRouter = router({
         : 0;
 
       await notifyOwner({
-        title: `⚠️ Tarefa Crítica Pendente há ${daysPending} dias`,
-        content: `Semana ${task.week} | ${member?.name ?? "Membro"}: "${task.description}"\n\nMotivo: ${task.pendingReason ?? "Não informado"}\nResponsável pela pendência: ${responsible?.name ?? "Não identificado"}`,
+        title: `⚠️ Critical Task Pending for ${daysPending} days`,
+        content: `Week ${task.week} | ${member?.name ?? "Member"}: "${task.description}"\n\nReason: ${task.pendingReason ?? "Not provided"}\nPending owner: ${responsible?.name ?? "Not identified"}`,
       });
       await markTaskNotified(task.id);
       notified++;

@@ -43,19 +43,19 @@ export default function Home() {
 
           {/* Subtitle */}
           <p className="text-muted-foreground text-base max-w-lg mx-auto leading-relaxed">
-            Plataforma colaborativa para gestão do projeto de estruturação do Family Office MMLaw.
-            Acompanhe sprints, gerencie documentos e consulte a IA assistente.
+            Collaborative platform for managing the MMLaw Family Office structuring project.
+            Track sprints, manage documents, and consult the AI assistant.
           </p>
 
           {/* Features grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-left">
             {[
-              { icon: BarChart3, label: "Dashboard & Gantt", desc: "Visualização de progresso" },
-              { icon: Users, label: "Equipe", desc: "Gestão de membros" },
-              { icon: FileText, label: "Documentos", desc: "Repositório seguro" },
-              { icon: Bot, label: "Chat com IA", desc: "Consulta inteligente" },
-              { icon: Shield, label: "Acesso Seguro", desc: "Autenticação OAuth" },
-              { icon: LayoutDashboard, label: "Sprints", desc: "6 semanas de projeto" },
+              { icon: BarChart3, label: "Dashboard & Gantt", desc: "Progress overview" },
+              { icon: Users, label: "Team", desc: "Member management" },
+              { icon: FileText, label: "Documents", desc: "Secure repository" },
+              { icon: Bot, label: "AI Chat", desc: "Smart assistant" },
+              { icon: Shield, label: "Secure Access", desc: "OAuth authentication" },
+              { icon: LayoutDashboard, label: "Sprints", desc: "6-week project" },
             ].map((f) => (
               <div
                 key={f.label}
@@ -79,10 +79,10 @@ export default function Home() {
               size="lg"
               className="bg-primary text-primary-foreground hover:bg-primary/90 px-10 py-6 text-base font-semibold shadow-lg shadow-primary/20 rounded-xl"
             >
-              Entrar na Plataforma
+              Sign In to Platform
             </Button>
             <p className="text-xs text-muted-foreground mt-3">
-              Acesso exclusivo para membros da equipe MMLaw
+              Exclusive access for MMLaw team members
             </p>
           </div>
         </div>

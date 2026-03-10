@@ -12,19 +12,19 @@ const STATUS_STYLES = {
     bar: "bg-emerald-500/80 border-emerald-400",
     badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
     icon: CheckCircle2,
-    label: "Concluído",
+    label: "Completed",
   },
   in_progress: {
     bar: "bg-amber-500/80 border-amber-400",
     badge: "bg-amber-500/15 text-amber-400 border-amber-500/30",
     icon: Clock,
-    label: "Em Andamento",
+    label: "In Progress",
   },
   pending: {
     bar: "bg-red-500/70 border-red-400",
     badge: "bg-red-500/15 text-red-400 border-red-500/30",
     icon: AlertCircle,
-    label: "Pendente",
+    label: "Pending",
   },
 };
 
@@ -73,9 +73,9 @@ export default function GanttChart() {
       <div>
         <h1 className="text-3xl font-serif font-bold text-foreground flex items-center gap-3">
           <GanttIcon className="w-8 h-8 text-primary" />
-          Cronograma Gantt
+          Gantt Chart
         </h1>
-        <p className="text-muted-foreground mt-1">Visualização do progresso por membro e semana</p>
+        <p className="text-muted-foreground mt-1">Progress view by member and week</p>
       </div>
 
       {/* Legend */}
@@ -96,14 +96,14 @@ export default function GanttChart() {
               <thead>
                 <tr className="border-b border-border bg-secondary/50">
                   <th className="text-left p-4 text-sm font-semibold text-muted-foreground w-48 min-w-[12rem]">
-                    Membro
+                    Member
                   </th>
                   {WEEKS.map((week) => {
                     const ws = weekStats.find((w) => w.week === week);
                     return (
                       <th key={week} className="p-4 text-center w-[140px] min-w-[140px]">
                         <div className="space-y-1">
-                          <p className="text-sm font-semibold text-foreground">Semana {week}</p>
+                          <p className="text-sm font-semibold text-foreground">Week {week}</p>
                           {ws && ws.total > 0 && (
                             <div className="flex items-center justify-center gap-1">
                               <div className="h-1 w-16 bg-secondary rounded-full overflow-hidden">
@@ -130,7 +130,7 @@ export default function GanttChart() {
                 {ganttData.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="text-center py-12 text-muted-foreground text-sm">
-                      Nenhum membro ou tarefa cadastrada. Adicione membros e tarefas para visualizar o Gantt.
+                      No members or tasks found. Add members and tasks to view the Gantt chart.
                     </td>
                   </tr>
                 ) : (
@@ -176,7 +176,7 @@ export default function GanttChart() {
                                           className={`flex items-start gap-1.5 px-2 py-1.5 rounded border text-xs font-medium cursor-pointer transition-opacity hover:opacity-80 ${style.bar} text-white`}
                                         >
                                           <Icon className="w-3 h-3 shrink-0" />
-                                          <span className="min-w-0 whitespace-normal break-words text-left leading-tight">
+                                          <span className="min-w-0 whitespace-normal break-words text-left leading-tight line-clamp-3">
                                             {task.description}
                                           </span>
                                         </div>
@@ -186,9 +186,9 @@ export default function GanttChart() {
                                           <p className="font-semibold">{task.description}</p>
                                           <p className="text-xs opacity-80">Status: {style.label}</p>
                                           {task.pendingReason && (
-                                            <p className="text-xs text-red-300">Pendência: {task.pendingReason}</p>
+                                            <p className="text-xs text-red-300">Pending reason: {task.pendingReason}</p>
                                           )}
-                                          <p className="text-xs opacity-60">Prioridade: {task.priority}</p>
+                                          <p className="text-xs opacity-60">Priority: {task.priority}</p>
                                         </div>
                                       </TooltipContent>
                                     </Tooltip>
@@ -212,10 +212,10 @@ export default function GanttChart() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {weekStats.map((ws) => (
           <Card key={ws.week} className="bg-card border-border">
-            <CardContent className="p-4 text-center">
-              <p className="text-xs text-muted-foreground font-medium mb-2">Semana {ws.week}</p>
+            <CardContent className="p-3 text-center">
+              <p className="text-xs text-muted-foreground font-medium mb-2">Week {ws.week}</p>
               <p className="text-2xl font-bold text-primary">{ws.progress}%</p>
-              <p className="text-xs text-muted-foreground mt-1">{ws.completed}/{ws.total} tarefas</p>
+              <p className="text-xs text-muted-foreground mt-1">{ws.completed}/{ws.total} tasks</p>
               <div className="mt-2 h-1 bg-secondary rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all"

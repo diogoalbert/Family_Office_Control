@@ -25,6 +25,7 @@ import { useIsMobile } from "@/hooks/useMobile";
 import {
   BarChart3,
   Bot,
+  ClipboardList,
   FileText,
   GanttChart,
   LayoutDashboard,
@@ -40,11 +41,12 @@ import { Button } from "./ui/button";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: GanttChart, label: "Cronograma Gantt", path: "/gantt" },
-  { icon: BarChart3, label: "Tarefas", path: "/tasks" },
-  { icon: FileText, label: "Documentos", path: "/documents" },
-  { icon: Bot, label: "Chat com IA", path: "/chat" },
-  { icon: Users, label: "Equipe", path: "/team" },
+  { icon: GanttChart, label: "Gantt Chart", path: "/gantt" },
+  { icon: BarChart3, label: "Tasks", path: "/tasks" },
+  { icon: FileText, label: "Documents", path: "/documents" },
+  { icon: ClipboardList, label: "Internal Questions", path: "/internal-questions" },
+  { icon: Bot, label: "AI Chat", path: "/chat" },
+  { icon: Users, label: "Team", path: "/team" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -82,14 +84,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           <div className="w-full space-y-3">
             <p className="text-sm text-muted-foreground text-center">
-              Acesso restrito aos membros da equipe MMLaw. Faça login para continuar.
+              Access is restricted to MMLaw team members. Please sign in to continue.
             </p>
             <Button
               onClick={() => { window.location.href = getLoginUrl(); }}
               size="lg"
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
             >
-              Entrar na Plataforma
+              Sign In to Platform
             </Button>
           </div>
         </div>

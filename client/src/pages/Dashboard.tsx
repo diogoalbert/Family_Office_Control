@@ -20,9 +20,9 @@ import { useMemo } from "react";
 const WEEKS = [1, 2, 3, 4, 5, 6];
 
 const STATUS_CONFIG = {
-  completed: { label: "Concluído", color: "text-emerald-400", bg: "bg-emerald-500/15 border-emerald-500/30", icon: CheckCircle2 },
-  in_progress: { label: "Em Andamento", color: "text-amber-400", bg: "bg-amber-500/15 border-amber-500/30", icon: Clock },
-  pending: { label: "Pendente", color: "text-red-400", bg: "bg-red-500/15 border-red-500/30", icon: AlertCircle },
+  completed: { label: "Completed", color: "text-emerald-400", bg: "bg-emerald-500/15 border-emerald-500/30", icon: CheckCircle2 },
+  in_progress: { label: "In Progress", color: "text-amber-400", bg: "bg-amber-500/15 border-amber-500/30", icon: Clock },
+  pending: { label: "Pending", color: "text-red-400", bg: "bg-red-500/15 border-red-500/30", icon: AlertCircle },
 };
 
 export default function Dashboard() {
@@ -73,20 +73,20 @@ export default function Dashboard() {
   const handleCheckNotifications = async () => {
     try {
       const result = await checkOverdue.mutateAsync();
-      toast.success(`${result.notified} notificação(ões) enviada(s) ao owner`);
+      toast.success(`${result.notified} notification(s) sent to the owner`);
     } catch {
-      toast.error("Erro ao verificar notificações");
+      toast.error("Error checking notifications");
     }
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-5 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
-            Bem-vindo, <span className="text-primary font-medium">{user?.name?.split(" ")[0]}</span>. Aqui está o resumo do projeto.
+          <h1 className="text-2xl font-serif font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Welcome, <span className="text-primary font-medium">{user?.name?.split(" ")[0]}</span>. Here is your project summary.
           </p>
         </div>
         <Button
@@ -101,54 +101,54 @@ export default function Dashboard() {
           ) : (
             <Bell className="w-4 h-4" />
           )}
-          Verificar Pendências
+          Check Pending Items
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {[
-          { label: "Total de Tarefas", value: stats.total, icon: TrendingUp, color: "text-primary" },
-          { label: "Concluídas", value: stats.completed, icon: CheckCircle2, color: "text-emerald-400" },
-          { label: "Em Andamento", value: stats.inProgress, icon: Clock, color: "text-amber-400" },
-          { label: "Pendentes", value: stats.pending, icon: AlertCircle, color: "text-red-400" },
+          { label: "Total Tasks", value: stats.total, icon: TrendingUp, color: "text-primary" },
+          { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-emerald-400" },
+          { label: "In Progress", value: stats.inProgress, icon: Clock, color: "text-amber-400" },
+          { label: "Pending", value: stats.pending, icon: AlertCircle, color: "text-red-400" },
         ].map((stat) => (
-          <Card key={stat.label} className="bg-card border-border">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{stat.label}</p>
-                <stat.icon className={`w-4 h-4 ${stat.color}`} />
+          <Card key={stat.label} className="bg-card border-border py-0">
+            <CardContent className="px-3 py-2">
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-[10px] leading-none text-muted-foreground font-medium uppercase tracking-wide">{stat.label}</p>
+                <stat.icon className={`w-3 h-3 ${stat.color}`} />
               </div>
-              <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
+              <p className={`text-xl leading-none font-bold ${stat.color}`}>{stat.value}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* Progress + Members */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Overall Progress */}
         <Card className="bg-card border-border">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold text-foreground">Progresso Geral do Projeto</CardTitle>
+          <CardHeader className="pb-1 pt-3">
+            <CardTitle className="text-sm font-semibold text-foreground">Overall Project Progress</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-end justify-between mb-2">
-              <span className="text-4xl font-bold text-primary">{stats.progress}%</span>
-              <span className="text-sm text-muted-foreground">{stats.completed}/{stats.total} tarefas</span>
+          <CardContent className="space-y-2.5 px-3 pb-3 pt-0">
+            <div className="flex items-end justify-between mb-1">
+              <span className="text-2xl font-bold text-primary">{stats.progress}%</span>
+              <span className="text-xs text-muted-foreground">{stats.completed}/{stats.total} tasks</span>
             </div>
             <Progress value={stats.progress} className="h-2" />
 
-            <div className="space-y-3 pt-2">
+            <div className="space-y-2 pt-1">
               {weekStats.map((w) => (
-                <div key={w.week} className="space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground font-medium">Semana {w.week}</span>
+                <div key={w.week} className="space-y-0.5">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-muted-foreground font-medium">Week {w.week}</span>
                     <span className="text-foreground">{w.completed}/{w.total}</span>
                   </div>
                   <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all duration-500"
+                      className="h-full rounded-full transition-all duration-300"
                       style={{
                         width: `${w.progress}%`,
                         background: w.progress === 100
@@ -167,37 +167,37 @@ export default function Dashboard() {
 
         {/* Member Status */}
         <Card className="bg-card border-border">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary" />
-              Status por Membro
+          <CardHeader className="pb-1 pt-3">
+            <CardTitle className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5 text-primary" />
+              Status by Member
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2 px-3 pb-3 pt-0">
             {memberStats.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                Nenhum membro cadastrado ainda.
+              <p className="text-sm text-muted-foreground text-center py-2.5">
+                No members registered yet.
               </p>
             ) : (
               memberStats.map((m) => (
-                <div key={m.id} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50 border border-border/50">
+                <div key={m.id} className="flex items-center gap-2 p-2 rounded-lg bg-secondary/50 border border-border/50">
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-primary-foreground shrink-0"
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-primary-foreground shrink-0"
                     style={{ backgroundColor: m.color ?? "#6366f1" }}
                   >
                     {m.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{m.name}</p>
-                    <div className="flex items-center gap-2 mt-1">
+                    <p className="text-xs font-medium text-foreground truncate">{m.name}</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
                       <Progress value={m.progress} className="h-1 flex-1" />
-                      <span className="text-xs text-muted-foreground shrink-0">{m.progress}%</span>
+                      <span className="text-[11px] text-muted-foreground shrink-0">{m.progress}%</span>
                     </div>
                   </div>
                   <div className="flex gap-1 shrink-0">
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">{m.completed}</span>
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">{m.inProgress}</span>
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-red-500/15 text-red-400 border border-red-500/30">{m.pending}</span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">{m.completed}</span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">{m.inProgress}</span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-400 border border-red-500/30">{m.pending}</span>
                   </div>
                 </div>
               ))
@@ -207,35 +207,35 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Pending + Documents */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Recent Pending Tasks */}
         <Card className="bg-card border-border">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-red-400" />
-              Tarefas Pendentes Recentes
+          <CardHeader className="pb-1 pt-3">
+            <CardTitle className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+              Recent Pending Tasks
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-3 pb-3 pt-0">
             {recentPending.length === 0 ? (
-              <div className="flex flex-col items-center py-6 gap-2">
+              <div className="flex flex-col items-center py-3 gap-1.5">
                 <CheckCircle2 className="w-8 h-8 text-emerald-400" />
-                <p className="text-sm text-muted-foreground">Nenhuma tarefa pendente!</p>
+                <p className="text-sm text-muted-foreground">No pending tasks!</p>
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {recentPending.map((task) => {
                   const member = members.find((m) => m.id === task.memberId);
                   return (
-                    <div key={task.id} className="flex items-start gap-3 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-                      <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
+                    <div key={task.id} className="flex items-start gap-2 p-2 rounded-lg bg-red-500/5 border border-red-500/20">
+                      <AlertCircle className="w-3.5 h-3.5 text-red-400 mt-0.5 shrink-0" />
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{task.description}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          Semana {task.week} · {member?.name ?? "?"}
+                        <p className="text-xs font-medium text-foreground truncate">{task.description}</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                          Week {task.week} · {member?.name ?? "?"}
                         </p>
                         {task.pendingReason && (
-                          <p className="text-xs text-red-400/80 mt-1 line-clamp-1">{task.pendingReason}</p>
+                          <p className="text-[11px] text-red-400/80 mt-0.5 line-clamp-1">{task.pendingReason}</p>
                         )}
                       </div>
                     </div>
@@ -248,40 +248,40 @@ export default function Dashboard() {
 
         {/* Documents & Quick Stats */}
         <Card className="bg-card border-border">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-              <FileText className="w-4 h-4 text-primary" />
-              Repositório de Documentos
+          <CardHeader className="pb-1 pt-3">
+            <CardTitle className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-primary" />
+              Document Repository
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-4 mb-4">
+          <CardContent className="px-3 pb-3 pt-0">
+            <div className="flex items-center gap-3 mb-2">
               <div className="text-center">
-                <p className="text-3xl font-bold text-primary">{documents.length}</p>
-                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="text-xl font-bold text-primary">{documents.length}</p>
+                <p className="text-[11px] text-muted-foreground">Total</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-emerald-400">
+                <p className="text-xl font-bold text-emerald-400">
                   {documents.filter((d) => d.processed).length}
                 </p>
-                <p className="text-xs text-muted-foreground">Processados</p>
+                <p className="text-[11px] text-muted-foreground">Processed</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-amber-400">
+                <p className="text-xl font-bold text-amber-400">
                   {documents.filter((d) => !d.processed).length}
                 </p>
-                <p className="text-xs text-muted-foreground">Pendentes</p>
+                <p className="text-[11px] text-muted-foreground">Pending</p>
               </div>
             </div>
 
             {documents.length > 0 ? (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {documents.slice(0, 4).map((doc) => (
-                  <div key={doc.id} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/50">
-                    <FileText className="w-4 h-4 text-primary shrink-0" />
+                  <div key={doc.id} className="flex items-center gap-2 p-1.5 rounded-lg bg-secondary/50">
+                    <FileText className="w-3.5 h-3.5 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-foreground truncate">{doc.originalName}</p>
-                      <p className="text-xs text-muted-foreground">{doc.uploaderName}</p>
+                      <p className="text-[11px] font-medium text-foreground truncate">{doc.originalName}</p>
+                      <p className="text-[11px] text-muted-foreground">{doc.uploaderName}</p>
                     </div>
                     <Badge variant="outline" className={doc.processed ? "text-emerald-400 border-emerald-500/30" : "text-amber-400 border-amber-500/30"}>
                       {doc.processed ? "✓" : "..."}
@@ -290,8 +290,8 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                Nenhum documento carregado ainda.
+              <p className="text-sm text-muted-foreground text-center py-2.5">
+                No documents uploaded yet.
               </p>
             )}
           </CardContent>

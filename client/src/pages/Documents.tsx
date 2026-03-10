@@ -38,12 +38,12 @@ export default function Documents() {
   const uploadMutation = trpc.documents.upload.useMutation({
     onSuccess: () => {
       utils.documents.list.invalidate();
-      toast.success("Documento carregado com sucesso!");
+      toast.success("Document uploaded successfully!");
       setUploading(false);
       setUploadProgress(0);
     },
     onError: (err) => {
-      toast.error("Erro ao carregar documento: " + err.message);
+      toast.error("Error uploading document: " + err.message);
       setUploading(false);
       setUploadProgress(0);
     },
@@ -51,13 +51,13 @@ export default function Documents() {
   const processDocuments = trpc.documents.processDocuments.useMutation({
     onSuccess: (result) => {
       utils.documents.list.invalidate();
-      toast.success(`${result.processed} documento(s) processado(s) para o chat IA`);
+      toast.success(`${result.processed} document(s) processed for AI chat`);
     },
-    onError: () => toast.error("Erro ao processar documentos"),
+    onError: () => toast.error("Error processing documents"),
   });
   const deleteDoc = trpc.documents.delete.useMutation({
-    onSuccess: () => { utils.documents.list.invalidate(); toast.success("Documento removido!"); },
-    onError: () => toast.error("Erro ao remover documento"),
+    onSuccess: () => { utils.documents.list.invalidate(); toast.success("Document removed!"); },
+    onError: () => toast.error("Error removing document"),
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -70,7 +70,7 @@ export default function Documents() {
 
     for (const file of Array.from(files)) {
       if (file.size > FILE_SIZE_LIMIT) {
-        toast.error(`${file.name}: arquivo muito grande (máx. 10MB)`);
+        toast.error(`${file.name}: file is too large (max 10MB)`);
         continue;
       }
 
@@ -129,10 +129,10 @@ export default function Documents() {
         <div>
           <h1 className="text-3xl font-serif font-bold text-foreground flex items-center gap-3">
             <FileText className="w-8 h-8 text-primary" />
-            Repositório de Documentos
+            Document Repository
           </h1>
           <p className="text-muted-foreground mt-1">
-            Carregue pareceres e documentos de pesquisa. Os arquivos são processados automaticamente para o Chat com IA.
+            Upload opinions and research documents. Files are processed automatically for AI Chat.
           </p>
         </div>
         {unprocessed > 0 && (
@@ -146,19 +146,19 @@ export default function Documents() {
             ) : (
               <RefreshCw className="w-4 h-4" />
             )}
-            Processar {unprocessed} doc(s)
+            Process {unprocessed} document(s)
           </Button>
         )}
       </div>
 
       {/* Proton Drive Notice */}
       <Card className="bg-amber-500/5 border-amber-500/30">
-        <CardContent className="p-4 flex items-start gap-3">
+        <CardContent className="p-3 flex items-start gap-2.5">
           <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-medium text-amber-400">Sincronização com Proton Drive</p>
+            <p className="text-sm font-medium text-amber-400">Proton Drive Sync</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Os documentos são armazenados na nuvem e ficam acessíveis de qualquer lugar do mundo. Para sincronizar com o Proton Drive, instale o cliente oficial do Proton Drive no servidor e configure a sincronização com a pasta de uploads.
+              Documents are stored in the cloud and accessible from anywhere. To sync with Proton Drive, install the official Proton Drive client on the server and configure sync with the uploads folder.
             </p>
           </div>
         </CardContent>
@@ -166,7 +166,7 @@ export default function Documents() {
 
       {/* Upload Area */}
       <Card className="bg-card border-border">
-        <CardContent className="p-6">
+        <CardContent className="p-4">
           <div
             className={`border-2 border-dashed rounded-xl p-10 text-center transition-all cursor-pointer ${
               dragOver
@@ -189,19 +189,19 @@ export default function Documents() {
             {uploading ? (
               <div className="space-y-3">
                 <Loader2 className="w-10 h-10 text-primary mx-auto animate-spin" />
-                <p className="text-sm font-medium text-foreground">Carregando documento...</p>
+                <p className="text-sm font-medium text-foreground">Uploading document...</p>
                 <Progress value={uploadProgress} className="max-w-xs mx-auto h-1.5" />
               </div>
             ) : (
               <div className="space-y-3">
                 <Upload className="w-10 h-10 text-muted-foreground mx-auto" />
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Arraste arquivos aqui ou clique para selecionar</p>
-                  <p className="text-xs text-muted-foreground mt-1">PDF, DOC, DOCX, TXT, MD · Máximo 10MB por arquivo</p>
+                  <p className="text-sm font-semibold text-foreground">Drag files here or click to select</p>
+                  <p className="text-xs text-muted-foreground mt-1">PDF, DOC, DOCX, TXT, MD · Maximum 10MB per file</p>
                 </div>
                 <Button variant="outline" size="sm" className="border-border hover:border-primary/40">
                   <Upload className="w-4 h-4 mr-2" />
-                  Selecionar Arquivos
+                  Select Files
                 </Button>
               </div>
             )}
@@ -213,11 +213,11 @@ export default function Documents() {
       <div className="grid grid-cols-3 gap-4">
         {[
           { label: "Total", value: documents.length, color: "text-primary", icon: FileText },
-          { label: "Processados (IA)", value: documents.filter((d) => d.processed).length, color: "text-emerald-400", icon: CheckCircle2 },
-          { label: "Aguardando", value: unprocessed, color: "text-amber-400", icon: Clock },
+          { label: "Processed (IA)", value: documents.filter((d) => d.processed).length, color: "text-emerald-400", icon: CheckCircle2 },
+          { label: "Waiting", value: unprocessed, color: "text-amber-400", icon: Clock },
         ].map((s) => (
           <Card key={s.label} className="bg-card border-border">
-            <CardContent className="p-4 flex items-center gap-3">
+            <CardContent className="p-3 flex items-center gap-2.5">
               <s.icon className={`w-5 h-5 ${s.color}`} />
               <div>
                 <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
@@ -230,21 +230,21 @@ export default function Documents() {
 
       {/* Documents List */}
       <Card className="bg-card border-border">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold text-foreground">Documentos Carregados</CardTitle>
+        <CardHeader className="pb-2 pt-3">
+          <CardTitle className="text-sm font-semibold text-foreground">Uploaded Documents</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {documents.length === 0 ? (
-            <div className="flex flex-col items-center py-12 gap-3">
+            <div className="flex flex-col items-center py-8 gap-2">
               <FileText className="w-10 h-10 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">Nenhum documento carregado ainda.</p>
+              <p className="text-sm text-muted-foreground">No documents uploaded yet.</p>
             </div>
           ) : (
             <div className="divide-y divide-border/50">
               {documents.map((doc) => {
                 const Icon = getFileIcon(doc.mimeType);
                 return (
-                  <div key={doc.id} className="flex items-center gap-4 px-6 py-4 hover:bg-accent/20 transition-colors">
+                  <div key={doc.id} className="flex items-center gap-3 px-4 py-3 hover:bg-accent/20 transition-colors">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                       <Icon className="w-5 h-5 text-primary" />
                     </div>
@@ -258,7 +258,7 @@ export default function Documents() {
                         <span className="text-xs text-muted-foreground">{doc.uploaderName ?? "—"}</span>
                         <span className="text-xs text-muted-foreground">·</span>
                         <span className="text-xs text-muted-foreground">
-                          {new Date(doc.createdAt).toLocaleDateString("pt-BR")}
+                          {new Date(doc.createdAt).toLocaleDateString("en-US")}
                         </span>
                       </div>
                     </div>
@@ -274,11 +274,11 @@ export default function Documents() {
                         }
                       >
                         {doc.processed ? (
-                          <><CheckCircle2 className="w-3 h-3 mr-1" /> Processado</>
+                          <><CheckCircle2 className="w-3 h-3 mr-1" /> Processed</>
                         ) : doc.processingError ? (
-                          <><AlertCircle className="w-3 h-3 mr-1" /> Erro</>
+                          <><AlertCircle className="w-3 h-3 mr-1" /> Error</>
                         ) : (
-                          <><Clock className="w-3 h-3 mr-1" /> Pendente</>
+                          <><Clock className="w-3 h-3 mr-1" /> Pending</>
                         )}
                       </Badge>
                       <a

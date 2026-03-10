@@ -9,7 +9,7 @@ import { Bot, Trash2, Info, Sparkles } from "lucide-react";
 export default function Chat() {
   const { data: history = [] } = trpc.chat.history.useQuery();
   const askMutation = trpc.chat.ask.useMutation({
-    onError: (err) => toast.error("Erro ao consultar IA: " + err.message),
+    onError: (err) => toast.error("Error querying AI: " + err.message),
   });
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -48,10 +48,10 @@ export default function Chat() {
         <div>
           <h1 className="text-3xl font-serif font-bold text-foreground flex items-center gap-3">
             <Bot className="w-8 h-8 text-primary" />
-            Chat com IA
+            AI Chat
           </h1>
           <p className="text-muted-foreground mt-1">
-            Consulte o assistente sobre o projeto, tarefas e documentos carregados
+            Ask the assistant about the project, tasks, and uploaded documents
           </p>
         </div>
         <Button
@@ -65,19 +65,19 @@ export default function Chat() {
           className="gap-2 border-border hover:border-destructive/40 hover:text-destructive"
         >
           <Trash2 className="w-4 h-4" />
-          Limpar Histórico
+          Clear History
         </Button>
       </div>
 
       {/* RAG Context Info */}
       <Card className="bg-card border-border">
-        <CardContent className="p-4">
+        <CardContent className="p-3">
           <div className="flex items-start gap-3">
             <Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">Assistente com RAG Ativo</p>
+              <p className="text-sm font-medium text-foreground">Assistant with RAG Enabled</p>
               <p className="text-xs text-muted-foreground mt-1">
-                O assistente tem acesso ao status atual do projeto e aos documentos processados da aba Documentos. Faça perguntas sobre tarefas, prazos, membros ou conteúdo dos documentos.
+                The assistant has access to current project status and processed documents from the Documents tab. Ask about tasks, deadlines, team members, or document content.
               </p>
             </div>
           </div>
@@ -88,12 +88,12 @@ export default function Chat() {
       {messages.length === 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[
-            "Qual é o status geral do projeto?",
-            "Quais tarefas estão pendentes esta semana?",
-            "Quem é responsável pelas tarefas da Semana 3?",
-            "Quais são as principais pendências do Diogo?",
-            "Resuma o progresso de cada membro da equipe",
-            "Quais documentos foram carregados no repositório?",
+            "What is the overall project status?",
+            "Which tasks are pending this week?",
+            "Who is responsible for Week 3 tasks?",
+            "What are Diogo’s main pending items?",
+            "Summarize each team member’s progress",
+            "Which documents were uploaded to the repository?",
           ].map((q) => (
             <button
               key={q}
@@ -114,7 +114,7 @@ export default function Chat() {
             messages={messages}
             onSendMessage={handleSend}
             isLoading={askMutation.isPending}
-            placeholder="Faça uma pergunta sobre o projeto, tarefas ou documentos..."
+            placeholder="Ask about the project, tasks, or documents..."
             height={520}
             className="border-0 rounded-none"
           />
@@ -125,7 +125,7 @@ export default function Chat() {
       <div className="flex items-start gap-2 text-xs text-muted-foreground">
         <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
         <p>
-          O assistente usa Retrieval-Augmented Generation (RAG) para buscar informações relevantes nos documentos e no status atual do projeto antes de responder.
+          The assistant uses Retrieval-Augmented Generation (RAG) to retrieve relevant information from documents and current project status before answering.
         </p>
       </div>
     </div>

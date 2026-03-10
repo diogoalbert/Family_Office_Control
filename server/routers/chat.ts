@@ -27,7 +27,7 @@ export const chatRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const { question } = input;
-      const userName = ctx.user?.name ?? "Usuário";
+      const userName = ctx.user?.name ?? "User";
 
       // Save user message
       await saveChatMessage({
@@ -60,7 +60,7 @@ export const chatRouter = router({
             .slice(0, TOP_K);
 
           usedChunkIds = scored.map((c) => c.id);
-          contextText = scored.map((c, i) => `[Trecho ${i + 1}]\n${c.content}`).join("\n\n---\n\n");
+          contextText = scored.map((c, i) => `[Excerpt ${i + 1}]\n${c.content}`).join("\n\n---\n\n");
         }
       } catch (err) {
         console.warn("[RAG] Could not retrieve context:", err);
@@ -75,26 +75,26 @@ export const chatRouter = router({
         const taskSummary = tasks
           .map((t) => {
             const member = memberMap.get(t.memberId);
-            return `Semana ${t.week} | ${member?.name ?? "?"}: "${t.description}" → ${t.status}${t.pendingReason ? ` (Pendência: ${t.pendingReason})` : ""}`;
+            return `Week ${t.week} | ${member?.name ?? "?"}: "${t.description}" → ${t.status}${t.pendingReason ? ` (Pending reason: ${t.pendingReason})` : ""}`;
           })
           .join("\n");
 
-        projectContext = `\n\n## Status Atual do Projeto\n${taskSummary}`;
+        projectContext = `\n\n## Current Project Status\n${taskSummary}`;
       } catch (err) {
         console.warn("[Chat] Could not load project status:", err);
       }
 
       // ── Build system prompt ───────────────────────────────────────────────────
-      const systemPrompt = `Você é o assistente de IA da plataforma de gestão do Family Office MMLaw. Você tem acesso ao status atual do projeto e aos documentos carregados pela equipe.
+      const systemPrompt = `You are the AI assistant for the MMLaw Family Office management platform. You have access to current project status and uploaded team documents.
 
-Responda sempre em português, de forma clara, objetiva e profissional. Se a informação solicitada não estiver disponível no contexto fornecido, diga isso claramente.
+Always respond in English, clearly, objectively, and professionally. If requested information is not available in the provided context, state that clearly.
 
-${contextText ? `## Documentos Relevantes\n${contextText}` : ""}
+${contextText ? `## Documents Relevantes\n${contextText}` : ""}
 ${projectContext}`;
 
       // ── Call LLM ─────────────────────────────────────────────────────────────
       let answer =
-        "Desculpe, não consegui gerar uma resposta no momento.";
+        "Sorry, I could not generate a response right now.";
       try {
         const response = await invokeLLM({
           messages: [
@@ -110,14 +110,14 @@ ${projectContext}`;
       } catch (err) {
         console.warn("[Chat] LLM unavailable:", err);
         answer =
-          "A integração de IA não está configurada neste ambiente local. " +
-          "Defina BUILT_IN_FORGE_API_URL e BUILT_IN_FORGE_API_KEY no .env para habilitar respostas do assistente.";
+          "AI integration is not configured in this local environment. " +
+          "Set BUILT_IN_FORGE_API_URL and BUILT_IN_FORGE_API_KEY in .env to enable assistant responses.";
       }
 
       // Save assistant message
       await saveChatMessage({
         userId: ctx.user?.id,
-        userName: "Assistente IA",
+        userName: "AI Assistant",
         role: "assistant",
         content: answer,
         contextUsed: usedChunkIds.length > 0 ? JSON.stringify(usedChunkIds) : null,

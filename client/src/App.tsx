@@ -12,6 +12,7 @@ import Documents from "./pages/Documents";
 import Chat from "./pages/Chat";
 import Team from "./pages/Team";
 import Home from "./pages/Home";
+import InternalQuestions from "./pages/InternalQuestions";
 
 function Router() {
   return (
@@ -45,6 +46,11 @@ function Router() {
       <Route path="/team">
         <DashboardLayout>
           <Team />
+        </DashboardLayout>
+      </Route>
+      <Route path="/internal-questions">
+        <DashboardLayout>
+          <InternalQuestions />
         </DashboardLayout>
       </Route>
       <Route path="/404" component={NotFound} />

@@ -6,6 +6,7 @@ import { teamMembersRouter } from "./routers/teamMembers";
 import { tasksRouter } from "./routers/tasks";
 import { documentsRouter } from "./routers/documents";
 import { chatRouter } from "./routers/chat";
+import { internalQuestionsRouter } from "./routers/internalQuestions";
 
 export const appRouter = router({
   system: systemRouter,
@@ -23,6 +24,7 @@ export const appRouter = router({
   tasks: tasksRouter,
   documents: documentsRouter,
   chat: chatRouter,
+  internalQuestions: internalQuestionsRouter,
 });
 
 export type AppRouter = typeof appRouter;

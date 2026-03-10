@@ -16,6 +16,7 @@ import {
   type TeamMember,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import { INTERNAL_QUESTIONS } from "../shared/internalQuestions";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let localTeamMembers: TeamMember[] = [];
@@ -266,6 +267,62 @@ export async function getWeekCompletionStatus(week: number) {
   const all = await db.select().from(tasks).where(eq(tasks.week, week));
   const completed = all.filter((t) => t.status === "completed").length;
   return { total: all.length, completed, allDone: all.length > 0 && completed === all.length };
+}
+
+// ─── Internal Questions ───────────────────────────────────────────────────────
+async function ensureInternalQuestionAnswersTable() {
+  const db = await getDb();
+  if (!db) return;
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS internalQuestionAnswers (
+      id int NOT NULL AUTO_INCREMENT,
+      code varchar(32) NOT NULL,
+      answer text NULL,
+      createdAt timestamp NOT NULL DEFAULT (now()),
+      updatedAt timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY internalQuestionAnswers_code_unique (code)
+    )
+  `);
+}
+
+export async function getInternalQuestions() {
+  const db = await getDb();
+  if (!db) {
+    return INTERNAL_QUESTIONS.map((q) => ({ ...q, answer: "", answerUpdatedAt: null as Date | null }));
+  }
+  await ensureInternalQuestionAnswersTable();
+
+  const rowsResult = await db.execute(sql`select code, answer, updatedAt from internalQuestionAnswers`);
+  const rows = rowsResult as unknown as Array<{
+    code: string;
+    answer: string | null;
+    updatedAt: Date;
+  }>;
+  const answerMap = new Map(rows.map((r) => [r.code, r]));
+
+  return INTERNAL_QUESTIONS.map((q) => {
+    const answer = answerMap.get(q.code);
+    return {
+      ...q,
+      answer: answer?.answer ?? "",
+      answerUpdatedAt: answer?.updatedAt ?? null,
+    };
+  });
+}
+
+export async function upsertInternalQuestionAnswer(code: string, answer: string) {
+  const db = await getDb();
+  if (!db) return { success: true };
+  await ensureInternalQuestionAnswersTable();
+  await db.execute(sql`
+    insert into internalQuestionAnswers (code, answer)
+    values (${code}, ${answer})
+    on duplicate key update
+      answer = values(answer),
+      updatedAt = now()
+  `);
+  return { success: true };
 }
 
 // ─── Documents ────────────────────────────────────────────────────────────────

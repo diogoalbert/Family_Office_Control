@@ -46,15 +46,15 @@ type Task = {
 };
 
 const STATUS_CONFIG = {
-  completed: { label: "Concluído", icon: CheckCircle2, className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
-  in_progress: { label: "Em Andamento", icon: Clock, className: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
-  pending: { label: "Pendente", icon: AlertCircle, className: "bg-red-500/15 text-red-400 border-red-500/30" },
+  completed: { label: "Completed", icon: CheckCircle2, className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
+  in_progress: { label: "In Progress", icon: Clock, className: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
+  pending: { label: "Pending", icon: AlertCircle, className: "bg-red-500/15 text-red-400 border-red-500/30" },
 };
 
 const PRIORITY_CONFIG = {
-  high: { label: "Alta", className: "bg-red-500/15 text-red-400 border-red-500/30" },
-  medium: { label: "Média", className: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
-  low: { label: "Baixa", className: "bg-blue-500/15 text-blue-400 border-blue-500/30" },
+  high: { label: "High", className: "bg-red-500/15 text-red-400 border-red-500/30" },
+  medium: { label: "Medium", className: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
+  low: { label: "Low", className: "bg-blue-500/15 text-blue-400 border-blue-500/30" },
 };
 
 const MEMBER_COLORS = [
@@ -70,8 +70,8 @@ export default function Tasks() {
   const { data: members = [] } = trpc.teamMembers.list.useQuery();
 
   const updateStatus = trpc.tasks.updateStatus.useMutation({
-    onSuccess: () => { utils.tasks.list.invalidate(); toast.success("Tarefa atualizada!"); },
-    onError: (error) => toast.error(error.message || "Erro ao atualizar tarefa"),
+    onSuccess: () => { utils.tasks.list.invalidate(); toast.success("Task updated!"); },
+    onError: (error) => toast.error(error.message || "Error updating task"),
   });
   const createTask = trpc.tasks.create.useMutation({
     onSuccess: async () => {
@@ -80,14 +80,14 @@ export default function Tasks() {
       setFilterMember("all");
       setFilterStatus("all");
       setFilterWeek("all");
-      toast.success("Tarefa criada!");
+      toast.success("Task created!");
       setShowCreate(false);
     },
-    onError: (error) => toast.error(error.message || "Erro ao criar tarefa"),
+    onError: (error) => toast.error(error.message || "Error creating task"),
   });
   const deleteTask = trpc.tasks.delete.useMutation({
-    onSuccess: () => { utils.tasks.list.invalidate(); toast.success("Tarefa removida!"); },
-    onError: () => toast.error("Erro ao remover tarefa"),
+    onSuccess: () => { utils.tasks.list.invalidate(); toast.success("Task removed!"); },
+    onError: () => toast.error("Error removing task"),
   });
 
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -152,12 +152,12 @@ export default function Tasks() {
   const handleSaveEdit = async () => {
     if (!editingTask) return;
     if (!editDesc.trim()) {
-      toast.error("A descrição da tarefa é obrigatória");
+      toast.error("Task description is required");
       return;
     }
     const parsedWeek = Number.parseInt(editWeek, 10);
     if (!Number.isFinite(parsedWeek)) {
-      toast.error("Semana inválida");
+      toast.error("Invalid week");
       return;
     }
     const hasResponsible = editResponsible !== "" && editResponsible !== NO_RESPONSIBLE_VALUE;
@@ -178,21 +178,21 @@ export default function Tasks() {
 
   const handleCreate = async () => {
     if (!newDesc.trim() || !newMember) {
-      toast.error("Preencha todos os campos obrigatórios");
+      toast.error("Fill all required fields");
       return;
     }
     const parsedWeek = Number.parseInt(newWeek, 10);
     const parsedMemberId = Number.parseInt(newMember, 10);
     if (!Number.isFinite(parsedWeek) || !Number.isFinite(parsedMemberId)) {
-      toast.error("Semana ou membro inválido");
+      toast.error("Invalid week or member");
       return;
     }
     if (newStatus === "pending" && !newReason.trim()) {
-      toast.error("Informe o motivo da pendência");
+      toast.error("Provide the pending reason");
       return;
     }
     if (newStatus === "pending" && !newResponsible) {
-      toast.error("Selecione o responsável pela pendência");
+      toast.error("Select the pending owner");
       return;
     }
     await createTask.mutateAsync({
@@ -227,27 +227,27 @@ export default function Tasks() {
         <div>
           <h1 className="text-3xl font-serif font-bold text-foreground flex items-center gap-3">
             <BarChart3 className="w-8 h-8 text-primary" />
-            Gestão de Tarefas
+            Task Management
           </h1>
-          <p className="text-muted-foreground mt-1">Acompanhe e atualize o status de cada tarefa</p>
+          <p className="text-muted-foreground mt-1">Track and update each task status</p>
         </div>
         <Button onClick={() => setShowCreate(true)} className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="w-4 h-4" />
-          Nova Tarefa
+          New Task
         </Button>
       </div>
 
       {/* Filters */}
       <Card className="bg-card border-border">
-        <CardContent className="p-4">
+        <CardContent className="p-3">
           <div className="flex flex-wrap items-center gap-3">
             <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
             <Select value={filterMember} onValueChange={setFilterMember}>
               <SelectTrigger className="w-44 h-9 bg-secondary border-border">
-                <SelectValue placeholder="Todos os membros" />
+                <SelectValue placeholder="All members" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos os membros</SelectItem>
+                <SelectItem value="all">All members</SelectItem>
                 {members.map((m) => (
                   <SelectItem key={m.id} value={m.id.toString()}>{m.name}</SelectItem>
                 ))}
@@ -256,24 +256,24 @@ export default function Tasks() {
 
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-40 h-9 bg-secondary border-border">
-                <SelectValue placeholder="Todos os status" />
+                <SelectValue placeholder="All statuses" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos os status</SelectItem>
-                <SelectItem value="pending">Pendente</SelectItem>
-                <SelectItem value="in_progress">Em Andamento</SelectItem>
-                <SelectItem value="completed">Concluído</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="in_progress">In Progress</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={filterWeek} onValueChange={setFilterWeek}>
               <SelectTrigger className="w-36 h-9 bg-secondary border-border">
-                <SelectValue placeholder="Todas as semanas" />
+                <SelectValue placeholder="All weeks" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas as semanas</SelectItem>
+                <SelectItem value="all">All weeks</SelectItem>
                 {[1, 2, 3, 4, 5, 6].map((w) => (
-                  <SelectItem key={w} value={w.toString()}>Semana {w}</SelectItem>
+                  <SelectItem key={w} value={w.toString()}>Week {w}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -285,7 +285,7 @@ export default function Tasks() {
                 onClick={() => { setFilterMember("all"); setFilterStatus("all"); setFilterWeek("all"); }}
                 className="text-muted-foreground hover:text-foreground h-9"
               >
-                Limpar filtros
+                Clear filters
               </Button>
             )}
           </div>
@@ -295,8 +295,8 @@ export default function Tasks() {
       {/* Tasks by Member */}
       {members.length === 0 ? (
         <Card className="bg-card border-border">
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">Nenhum membro cadastrado. Adicione membros na aba Equipe.</p>
+          <CardContent className="py-8 text-center">
+            <p className="text-muted-foreground">No members registered. Add members in the Team tab.</p>
           </CardContent>
         </Card>
       ) : (
@@ -308,7 +308,7 @@ export default function Tasks() {
 
           return (
             <Card key={memberId} className="bg-card border-border overflow-hidden">
-              <CardHeader className="pb-0 pt-5 px-6">
+              <CardHeader className="pb-1 pt-3 px-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div
@@ -339,19 +339,19 @@ export default function Tasks() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-0 mt-4">
+              <CardContent className="p-0 mt-2">
                 {memberTasks.length === 0 ? (
-                  <div className="px-6 pb-5 text-sm text-muted-foreground">Nenhuma tarefa encontrada com os filtros aplicados.</div>
+                  <div className="px-4 pb-3 text-sm text-muted-foreground">No tasks found with current filters.</div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
                         <tr className="border-y border-border/50 bg-secondary/30">
-                          <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-16">Semana</th>
-                          <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Tarefa</th>
+                          <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-16">Week</th>
+                          <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Task</th>
                           <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-36">Status</th>
-                          <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-24">Prioridade</th>
-                          <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Observações</th>
+                          <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-24">Priority</th>
+                          <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Notes</th>
                           <th className="px-4 py-3 w-20"></th>
                         </tr>
                       </thead>
@@ -387,7 +387,7 @@ export default function Tasks() {
                                     <div>
                                       <p className="text-xs text-red-400 line-clamp-2">{task.pendingReason}</p>
                                       {responsible && (
-                                        <p className="text-xs text-muted-foreground mt-0.5">Resp: {responsible.name}</p>
+                                        <p className="text-xs text-muted-foreground mt-0.5">Owner: {responsible.name}</p>
                                       )}
                                     </div>
                                   ) : (
@@ -429,18 +429,18 @@ export default function Tasks() {
 
       {orphanTasks.length > 0 && (
         <Card className="bg-card border-border overflow-hidden">
-          <CardHeader className="pb-0 pt-5 px-6">
-            <CardTitle className="text-lg font-semibold text-foreground">Tarefas sem membro vinculado</CardTitle>
+          <CardHeader className="pb-1 pt-3 px-4">
+            <CardTitle className="text-lg font-semibold text-foreground">Tasks without linked member</CardTitle>
           </CardHeader>
-          <CardContent className="p-0 mt-4">
+          <CardContent className="p-0 mt-2">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-y border-border/50 bg-secondary/30">
-                    <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-16">Semana</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Tarefa</th>
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-16">Week</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Task</th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-36">Status</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-24">Prioridade</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide w-24">Priority</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -484,30 +484,30 @@ export default function Tasks() {
       <Dialog open={!!editingTask} onOpenChange={(o) => !o && setEditingTask(null)}>
         <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-serif text-foreground">Atualizar Tarefa</DialogTitle>
+            <DialogTitle className="font-serif text-foreground">Update Task</DialogTitle>
           </DialogHeader>
           {editingTask && (
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label className="text-sm text-foreground">Descrição *</Label>
+                <Label className="text-sm text-foreground">Description *</Label>
                 <Textarea
                   value={editDesc}
                   onChange={(e) => setEditDesc(e.target.value)}
-                  placeholder="Descreva a tarefa..."
+                  placeholder="Describe the task..."
                   className="bg-secondary border-border resize-none text-sm"
                   rows={3}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm text-foreground">Semana *</Label>
+                <Label className="text-sm text-foreground">Week *</Label>
                 <Select value={editWeek} onValueChange={setEditWeek}>
                   <SelectTrigger className="bg-secondary border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {[1, 2, 3, 4, 5, 6].map((w) => (
-                      <SelectItem key={w} value={w.toString()}>Semana {w}</SelectItem>
+                      <SelectItem key={w} value={w.toString()}>Week {w}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -520,23 +520,23 @@ export default function Tasks() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pending">Pendente</SelectItem>
-                    <SelectItem value="in_progress">Em Andamento</SelectItem>
-                    <SelectItem value="completed">Concluído</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm text-foreground">Prioridade</Label>
+                <Label className="text-sm text-foreground">Priority</Label>
                 <Select value={editPriority} onValueChange={(v) => setEditPriority(v as any)}>
                   <SelectTrigger className="bg-secondary border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="low">Baixa</SelectItem>
-                    <SelectItem value="medium">Média</SelectItem>
-                    <SelectItem value="high">Alta</SelectItem>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -544,23 +544,23 @@ export default function Tasks() {
               {editStatus === "pending" && (
                 <>
                   <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Motivo da Pendência</Label>
+                    <Label className="text-sm text-foreground">Pending Reason</Label>
                     <Textarea
                       value={editReason}
                       onChange={(e) => setEditReason(e.target.value)}
-                      placeholder="Descreva o motivo da pendência..."
+                      placeholder="Describe the reason for pending status..."
                       className="bg-secondary border-border resize-none text-sm"
                       rows={3}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Responsável pela Pendência</Label>
+                    <Label className="text-sm text-foreground">Pending Owner</Label>
                     <Select value={editResponsible} onValueChange={setEditResponsible}>
                       <SelectTrigger className="bg-secondary border-border">
-                        <SelectValue placeholder="Selecionar responsável..." />
+                        <SelectValue placeholder="Select owner..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value={NO_RESPONSIBLE_VALUE}>Não identificado</SelectItem>
+                        <SelectItem value={NO_RESPONSIBLE_VALUE}>Not identified</SelectItem>
                         {members.map((m) => (
                           <SelectItem key={m.id} value={m.id.toString()}>{m.name}</SelectItem>
                         ))}
@@ -580,14 +580,14 @@ export default function Tasks() {
               }}
               className="border-border"
             >
-              Cancelar
+              Cancel
             </Button>
             <Button
               onClick={handleSaveEdit}
               disabled={updateStatus.isPending}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              {updateStatus.isPending ? "Salvando..." : "Salvar"}
+              {updateStatus.isPending ? "Saving..." : "Save"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -597,15 +597,15 @@ export default function Tasks() {
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
         <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-serif text-foreground">Nova Tarefa</DialogTitle>
+            <DialogTitle className="font-serif text-foreground">New Task</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label className="text-sm text-foreground">Descrição *</Label>
+              <Label className="text-sm text-foreground">Description *</Label>
               <Textarea
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
-                placeholder="Descreva a tarefa..."
+                placeholder="Describe the task..."
                 className="bg-secondary border-border resize-none text-sm"
                 rows={3}
               />
@@ -618,44 +618,44 @@ export default function Tasks() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pending">Pendente</SelectItem>
-                    <SelectItem value="in_progress">Em Andamento</SelectItem>
-                    <SelectItem value="completed">Concluído</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-sm text-foreground">Semana *</Label>
+                <Label className="text-sm text-foreground">Week *</Label>
                 <Select value={newWeek} onValueChange={setNewWeek}>
                   <SelectTrigger className="bg-secondary border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {[1, 2, 3, 4, 5, 6].map((w) => (
-                      <SelectItem key={w} value={w.toString()}>Semana {w}</SelectItem>
+                      <SelectItem key={w} value={w.toString()}>Week {w}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-sm text-foreground">Prioridade</Label>
+                <Label className="text-sm text-foreground">Priority</Label>
                 <Select value={newPriority} onValueChange={(v) => setNewPriority(v as any)}>
                   <SelectTrigger className="bg-secondary border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="low">Baixa</SelectItem>
-                    <SelectItem value="medium">Média</SelectItem>
-                    <SelectItem value="high">Alta</SelectItem>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm text-foreground">Membro Responsável *</Label>
+              <Label className="text-sm text-foreground">Task Owner *</Label>
               <Select value={newMember} onValueChange={setNewMember}>
                 <SelectTrigger className="bg-secondary border-border">
-                  <SelectValue placeholder="Selecionar membro..." />
+                  <SelectValue placeholder="Select member..." />
                 </SelectTrigger>
                 <SelectContent>
                   {members.map((m) => (
@@ -667,20 +667,20 @@ export default function Tasks() {
             {newStatus === "pending" && (
               <>
                 <div className="space-y-2">
-                  <Label className="text-sm text-foreground">Motivo da Pendência *</Label>
+                  <Label className="text-sm text-foreground">Pending Reason *</Label>
                   <Textarea
                     value={newReason}
                     onChange={(e) => setNewReason(e.target.value)}
-                    placeholder="Descreva o motivo da pendência..."
+                    placeholder="Describe the reason for pending status..."
                     className="bg-secondary border-border resize-none text-sm"
                     rows={3}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm text-foreground">Responsável pela Pendência *</Label>
+                  <Label className="text-sm text-foreground">Pending Owner *</Label>
                   <Select value={newResponsible} onValueChange={setNewResponsible}>
                     <SelectTrigger className="bg-secondary border-border">
-                      <SelectValue placeholder="Selecionar responsável..." />
+                      <SelectValue placeholder="Select owner..." />
                     </SelectTrigger>
                     <SelectContent>
                       {members.map((m) => (
@@ -693,13 +693,13 @@ export default function Tasks() {
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCreate(false)} className="border-border">Cancelar</Button>
+            <Button variant="outline" onClick={() => setShowCreate(false)} className="border-border">Cancel</Button>
             <Button
               onClick={handleCreate}
               disabled={createTask.isPending}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              {createTask.isPending ? "Criando..." : "Criar Tarefa"}
+              {createTask.isPending ? "Creating..." : "Criar Task"}
             </Button>
           </DialogFooter>
         </DialogContent>
