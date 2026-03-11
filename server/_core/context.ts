@@ -9,8 +9,16 @@ export type TrpcContext = {
 };
 
 function isAuthDisabled() {
+  const authMode = (process.env.AUTH_MODE ?? "").toLowerCase();
+  if (authMode === "disabled") return true;
+  if (authMode === "enabled") return false;
+
   if (process.env.DISABLE_AUTH === "true") return true;
   if (process.env.DISABLE_AUTH === "false") return false;
+
+  // Explicit app environment switch for hosted test/staging deployments.
+  if ((process.env.APP_ENV ?? "").toLowerCase() === "test") return true;
+
   return process.env.NODE_ENV === "development";
 }
 

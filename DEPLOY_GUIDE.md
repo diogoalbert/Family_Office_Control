@@ -85,6 +85,12 @@ VITE_FRONTEND_FORGE_API_URL=https://api.manus.im
 # Analytics (opcional)
 VITE_ANALYTICS_ENDPOINT=
 VITE_ANALYTICS_WEBSITE_ID=
+
+# Ambiente (opcional)
+# APP_ENV=test desabilita login para ambiente de testes hospedado
+APP_ENV=test
+# Alternativa explícita: AUTH_MODE=disabled (sobrepõe APP_ENV/NODE_ENV)
+# AUTH_MODE=disabled
 ```
 
 > **Como obter os valores:** No painel do Manus, vá em **Settings → Secrets** — todos os valores já estão configurados lá. Copie cada um para o seu `.env`.
