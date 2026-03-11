@@ -326,11 +326,15 @@ export async function getInternalQuestions() {
   await ensureInternalQuestionAnswersTable();
 
   const rowsResult = await db.execute(sql`select code, answer, updatedAt from internalQuestionAnswers`);
-  const rows = rowsResult as unknown as Array<{
+  // mysql2 raw results may come as [rows, fields] depending on driver/runtime path.
+  const rowsSource = Array.isArray(rowsResult)
+    ? (Array.isArray(rowsResult[0]) ? rowsResult[0] : rowsResult)
+    : (rowsResult as any)?.rows;
+  const rows = ((rowsSource ?? []) as Array<{
     code: string;
     answer: string | null;
-    updatedAt: Date;
-  }>;
+    updatedAt: Date | string;
+  }>).filter((row) => Boolean(row?.code));
   const answerMap = new Map(rows.map((r) => [r.code, r]));
 
   return INTERNAL_QUESTIONS.map((q) => {
@@ -338,7 +342,7 @@ export async function getInternalQuestions() {
     return {
       ...q,
       answer: answer?.answer ?? "",
-      answerUpdatedAt: answer?.updatedAt ?? null,
+      answerUpdatedAt: answer?.updatedAt ? new Date(answer.updatedAt) : null,
     };
   });
 }

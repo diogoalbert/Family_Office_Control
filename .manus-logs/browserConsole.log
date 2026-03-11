@@ -149,3 +149,15 @@
 [2026-03-10T16:14:08.948Z] {"timestamp":1773159246976,"level":"DEBUG","args":["[vite] connected."],"stack":null}
 [2026-03-11T13:16:44.290Z] {"timestamp":1773235002265,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
 [2026-03-11T13:16:44.290Z] {"timestamp":1773235002302,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-03-11T15:20:04.199Z] {"timestamp":1773242402172,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-03-11T15:20:04.199Z] {"timestamp":1773242402175,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-03-11T15:22:45.687Z] {"timestamp":1773242563668,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-03-11T15:22:45.688Z] {"timestamp":1773242563716,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-03-11T15:22:50.597Z] {"timestamp":1773242568584,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-03-11T15:22:50.597Z] {"timestamp":1773242568586,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-03-11T15:26:14.311Z] {"timestamp":1773242772823,"level":"DEBUG","args":["[vite]","hot updated: /src/pages/InternalQuestions.tsx"],"stack":null}
+[2026-03-11T15:26:14.312Z] {"timestamp":1773242772823,"level":"DEBUG","args":["[vite]","hot updated: /src/index.css"],"stack":null}
+[2026-03-11T15:26:16.307Z] {"timestamp":1773242776181,"level":"DEBUG","args":["[vite]","hot updated: /src/pages/InternalQuestions.tsx"],"stack":null}
+[2026-03-11T15:26:16.307Z] {"timestamp":1773242776181,"level":"DEBUG","args":["[vite]","hot updated: /src/index.css"],"stack":null}
+[2026-03-11T15:26:54.622Z] {"timestamp":1773242812615,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-03-11T15:26:54.622Z] {"timestamp":1773242812637,"level":"DEBUG","args":["[vite] connected."],"stack":null}

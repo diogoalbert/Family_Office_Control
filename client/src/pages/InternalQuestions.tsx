@@ -42,6 +42,7 @@ export default function InternalQuestions() {
   });
 
   const [draftAnswers, setDraftAnswers] = useState<Record<string, string>>({});
+  const [editingByCode, setEditingByCode] = useState<Record<string, boolean>>({});
   const [ownerFilter, setOwnerFilter] = useState("");
   const [weekFilter, setWeekFilter] = useState<string>("all");
 
@@ -83,6 +84,35 @@ export default function InternalQuestions() {
       code,
       answer: draftAnswers[code] ?? "",
     });
+    setEditingByCode((prev) => ({ ...prev, [code]: false }));
+  };
+
+  const handleEdit = (q: QuestionRow) => {
+    setDraftAnswers((prev) => ({
+      ...prev,
+      [q.code]: q.answer ?? "",
+    }));
+    setEditingByCode((prev) => ({ ...prev, [q.code]: true }));
+  };
+
+  const handleCancel = (q: QuestionRow) => {
+    setDraftAnswers((prev) => ({
+      ...prev,
+      [q.code]: q.answer ?? "",
+    }));
+    setEditingByCode((prev) => ({ ...prev, [q.code]: false }));
+  };
+
+  const handleDelete = async (q: QuestionRow) => {
+    await updateAnswer.mutateAsync({
+      code: q.code,
+      answer: "",
+    });
+    setDraftAnswers((prev) => ({
+      ...prev,
+      [q.code]: "",
+    }));
+    setEditingByCode((prev) => ({ ...prev, [q.code]: false }));
   };
 
   if (isLoading) {
@@ -177,21 +207,39 @@ export default function InternalQuestions() {
                 </div>
                 <p className="text-xs text-muted-foreground"><span className="font-semibold">Output format:</span> {q.outputFormat}</p>
 
-                <div className="space-y-2">
-                  <Label htmlFor={`answer-${q.code}`} className="text-sm text-foreground">Answer</Label>
-                  <Textarea
-                    id={`answer-${q.code}`}
-                    value={draftAnswers[q.code] ?? ""}
-                    onChange={(e) =>
-                      setDraftAnswers((prev) => ({
-                        ...prev,
-                        [q.code]: e.target.value,
-                      }))
-                    }
-                    placeholder="Type the answer to this question..."
-                    className="bg-background border-border min-h-28"
-                  />
-                </div>
+                {(() => {
+                  const hasSavedAnswer = (q.answer ?? "").trim().length > 0;
+                  const isEditing = editingByCode[q.code] || !hasSavedAnswer;
+
+                  if (isEditing) {
+                    return (
+                      <div className="space-y-2">
+                        <Label htmlFor={`answer-${q.code}`} className="text-sm text-foreground">Answer</Label>
+                        <Textarea
+                          id={`answer-${q.code}`}
+                          value={draftAnswers[q.code] ?? ""}
+                          onChange={(e) =>
+                            setDraftAnswers((prev) => ({
+                              ...prev,
+                              [q.code]: e.target.value,
+                            }))
+                          }
+                          placeholder="Type the answer to this question..."
+                          className="bg-background border-border min-h-28"
+                        />
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="space-y-2">
+                      <Label className="text-sm text-foreground">Answer</Label>
+                      <div className="rounded-md border border-border bg-background p-3 text-sm text-foreground whitespace-pre-wrap">
+                        {q.answer}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-xs text-muted-foreground">
@@ -199,13 +247,50 @@ export default function InternalQuestions() {
                       ? `Last updated: ${q.answerUpdatedAt.toLocaleString()}`
                       : "No saved answer yet"}
                   </p>
-                  <Button
-                    onClick={() => handleSave(q.code)}
-                    disabled={updateAnswer.isPending}
-                    className="bg-primary text-primary-foreground hover:bg-primary/90"
-                  >
-                    {updateAnswer.isPending ? "Saving..." : "Save"}
-                  </Button>
+                  {(() => {
+                    const hasSavedAnswer = (q.answer ?? "").trim().length > 0;
+                    const isEditing = editingByCode[q.code] || !hasSavedAnswer;
+
+                    if (isEditing) {
+                      return (
+                        <div className="flex items-center gap-2">
+                          {hasSavedAnswer && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => handleCancel(q)}
+                              disabled={updateAnswer.isPending}
+                            >
+                              Cancel
+                            </Button>
+                          )}
+                          <Button
+                            onClick={() => handleSave(q.code)}
+                            disabled={updateAnswer.isPending}
+                            className="bg-primary text-primary-foreground hover:bg-primary/90"
+                          >
+                            {updateAnswer.isPending ? "Saving..." : "Save"}
+                          </Button>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="flex items-center gap-2">
+                        <Button type="button" variant="outline" onClick={() => handleEdit(q)} disabled={updateAnswer.isPending}>
+                          Edit
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          onClick={() => handleDelete(q)}
+                          disabled={updateAnswer.isPending}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             ))}
