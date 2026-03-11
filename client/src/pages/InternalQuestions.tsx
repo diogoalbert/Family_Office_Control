@@ -225,7 +225,7 @@ export default function InternalQuestions() {
                             }))
                           }
                           placeholder="Type the answer to this question..."
-                          className="bg-background border-border min-h-28"
+                          className="bg-background border-border min-h-28 text-justify"
                         />
                       </div>
                     );
@@ -234,7 +234,7 @@ export default function InternalQuestions() {
                   return (
                     <div className="space-y-2">
                       <Label className="text-sm text-foreground">Answer</Label>
-                      <div className="rounded-md border border-border bg-background p-3 text-sm text-foreground whitespace-pre-wrap">
+                      <div className="rounded-md border border-border bg-background p-3 text-sm text-foreground whitespace-pre-wrap text-justify">
                         {q.answer}
                       </div>
                     </div>
