@@ -36,15 +36,15 @@ export default function Team() {
 
   const createMember = trpc.teamMembers.create.useMutation({
     onSuccess: () => { utils.teamMembers.list.invalidate(); toast.success("Member added!"); setShowCreate(false); },
-    onError: () => toast.error("Error adding member"),
+    onError: (error) => toast.error(error.message || "Error adding member"),
   });
   const updateMember = trpc.teamMembers.update.useMutation({
     onSuccess: () => { utils.teamMembers.list.invalidate(); toast.success("Member updated!"); setEditingMember(null); },
-    onError: () => toast.error("Error updating member"),
+    onError: (error) => toast.error(error.message || "Error updating member"),
   });
   const deleteMember = trpc.teamMembers.delete.useMutation({
     onSuccess: () => { utils.teamMembers.list.invalidate(); toast.success("Member removed!"); },
-    onError: () => toast.error("Error removing member"),
+    onError: (error) => toast.error(error.message || "Error removing member"),
   });
 
   const [showCreate, setShowCreate] = useState(false);
