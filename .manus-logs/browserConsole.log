@@ -147,3 +147,5 @@
 [2026-03-10T16:08:06.654Z] {"timestamp":1773158885727,"level":"WARN","args":["Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}."],"stack":null}
 [2026-03-10T16:14:08.948Z] {"timestamp":1773159246941,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
 [2026-03-10T16:14:08.948Z] {"timestamp":1773159246976,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-03-11T13:16:44.290Z] {"timestamp":1773235002265,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-03-11T13:16:44.290Z] {"timestamp":1773235002302,"level":"DEBUG","args":["[vite] connected."],"stack":null}

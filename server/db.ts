@@ -103,8 +103,24 @@ export async function createTeamMember(data: InsertTeamMember) {
     localTeamMembers.push(member);
     return { insertId: member.id };
   }
-  const result = await db.insert(teamMembers).values(data);
-  return result;
+  try {
+    const result = await db.insert(teamMembers).values(data);
+    return result;
+  } catch (error) {
+    const message = String((error as any)?.message ?? "");
+    const causeMessage = String((error as any)?.cause?.message ?? "");
+    const isMissingTeamColumns =
+      String((error as any)?.code ?? (error as any)?.cause?.code ?? "") === "ER_BAD_FIELD_ERROR" ||
+      /Unknown column/i.test(message) ||
+      /Unknown column/i.test(causeMessage);
+    if (!isMissingTeamColumns) throw error;
+
+    // Backward compatibility for environments with older teamMembers schema.
+    return db.execute(sql`
+      insert into teamMembers (name, role)
+      values (${data.name}, ${data.role})
+    `);
+  }
 }
 
 export async function updateTeamMember(id: number, data: Partial<InsertTeamMember>) {
@@ -123,7 +139,23 @@ export async function updateTeamMember(id: number, data: Partial<InsertTeamMembe
     };
     return { success: true };
   }
-  return db.update(teamMembers).set(data).where(eq(teamMembers.id, id));
+  try {
+    return db.update(teamMembers).set(data).where(eq(teamMembers.id, id));
+  } catch (error) {
+    const message = String((error as any)?.message ?? "");
+    const causeMessage = String((error as any)?.cause?.message ?? "");
+    const isMissingTeamColumns =
+      String((error as any)?.code ?? (error as any)?.cause?.code ?? "") === "ER_BAD_FIELD_ERROR" ||
+      /Unknown column/i.test(message) ||
+      /Unknown column/i.test(causeMessage);
+    if (!isMissingTeamColumns) throw error;
+
+    const setClauses: any[] = [];
+    if (data.name !== undefined) setClauses.push(sql`name = ${data.name}`);
+    if (data.role !== undefined) setClauses.push(sql`role = ${data.role}`);
+    if (setClauses.length === 0) return { success: true };
+    return db.execute(sql`update teamMembers set ${sql.join(setClauses, sql`, `)} where id = ${id}`);
+  }
 }
 
 export async function deleteTeamMember(id: number) {
